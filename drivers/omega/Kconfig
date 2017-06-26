@@ -1,0 +1,5 @@
+config OMEGA_MODULE
+    tristate "omega hardware support"
+    default y
+    help
+        omega hardware support

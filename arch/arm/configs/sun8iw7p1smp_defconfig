@@ -1848,6 +1848,8 @@ CONFIG_PWM=y
 CONFIG_PWM_SUNXI=y
 CONFIG_MEDIA_SUPPORT=y
 
+CONFIG_OMEGA_MODULE=y
+
 #
 # Multimedia core support
 #
