@@ -44,7 +44,6 @@
 #include "sunxi-uart.h"
 
 #define CONFIG_SW_UART_FORCE_LCR
-#define SUPPORT_SYSRQ
 //#define CONFIG_SW_UART_DUMP_DATA
 /*
  * ********************* Note **********************
