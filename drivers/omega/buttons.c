@@ -62,7 +62,7 @@ void buttons_pullup(void) {
 
     iounmap(regs);
 
-    regs = (unsigned int *)ioremap(0x01C20800 + 0x1C, 4);
+    regs = (unsigned int *)ioremap(0x01F02C00 + 0x1C, 4);
 
     regval = ioread32(regs);
     regval &= ~(3 << 0);
