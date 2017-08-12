@@ -48,7 +48,7 @@ SYSFS_GENERATE(presets, reset_presets, 0, 1, 440, SYSFS_NULL, clear_presets_indi
 SYSFS_GENERATE(test_mode, _test_mode, 0, 1, 440, SYSFS_NULL, SYSFS_NULL);
 
 static ssize_t __used smart_1_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-    return sprintf(buf, "%d\n", gpio_get_value(SMART_1_PIN);
+    return sprintf(buf, "%d\n", gpio_get_value(SMART_1_PIN));
 }
 
 static ssize_t __used smart_2_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
