@@ -49,7 +49,7 @@ SYSFS_GENERATE(test_mode, _test_mode, 0, 1, 440, SYSFS_NULL, SYSFS_NULL);
 
 static ssize_t __used button_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
 
-    sprintf(buf, "%s", attr->attr.name);
+    return sprintf(buf, "%s", attr->attr.name);
 }
 
 static struct kobj_attribute smart_1_attribute =__ATTR(smart_1, 440, button_show, SYSFS_NULL);
