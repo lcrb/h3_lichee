@@ -47,18 +47,41 @@ SYSFS_GENERATE(ap, reset_ap, 0, 1, 440, SYSFS_NULL, clear_ap_indicator);
 SYSFS_GENERATE(presets, reset_presets, 0, 1, 440, SYSFS_NULL, clear_presets_indicator);
 SYSFS_GENERATE(test_mode, _test_mode, 0, 1, 440, SYSFS_NULL, SYSFS_NULL);
 
-static ssize_t __used button_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
-
-    return sprintf(buf, "%s", attr->attr.name);
+static ssize_t __used smart_1_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+    return sprintf(buf, "%d\n", gpio_get_value(SMART_1_PIN);
 }
 
-static struct kobj_attribute smart_1_attribute =__ATTR(smart_1, 440, button_show, SYSFS_NULL);
-static struct kobj_attribute smart_2_attribute =__ATTR(smart_2, 440, button_show, SYSFS_NULL);
-static struct kobj_attribute alarm_attribute =__ATTR(alarm, 440, button_show, SYSFS_NULL);
-static struct kobj_attribute play_pause_attribute =__ATTR(play_pause, 440, button_show, SYSFS_NULL);
-static struct kobj_attribute vol_up_attribute =__ATTR(vol_up, 440, button_show, SYSFS_NULL);
-static struct kobj_attribute vol_down_attribute =__ATTR(vol_down, 440, button_show, SYSFS_NULL);
-static struct kobj_attribute snooze_attribute =__ATTR(snooze, 440, button_show, SYSFS_NULL);
+static ssize_t __used smart_2_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+    return sprintf(buf, "%d\n", gpio_get_value(SMART_2_PIN));
+}
+
+static ssize_t __used alarm_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+    return sprintf(buf, "%d\n", gpio_get_value(ALARM_PIN));
+}
+
+static ssize_t __used play_pause_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+    return sprintf(buf, "%d\n", gpio_get_value(PLAY_PAUSE_PIN));
+}
+
+static ssize_t __used vol_up_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+    return sprintf(buf, "%d\n", gpio_get_value(VOLUME_UP_PIN));
+}
+
+static ssize_t __used vol_down_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+    return sprintf(buf, "%d\n", gpio_get_value(VOLUME_DOWN_PIN));
+}
+
+static ssize_t __used snooze_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+    return sprintf(buf, "%d\n", gpio_get_value(SNOOZE_PIN));
+}
+
+static struct kobj_attribute smart_1_attribute =__ATTR(smart_1, 440, smart_1_show, SYSFS_NULL);
+static struct kobj_attribute smart_2_attribute =__ATTR(smart_2, 440, smart_2_show, SYSFS_NULL);
+static struct kobj_attribute alarm_attribute =__ATTR(alarm, 440, alarm_show, SYSFS_NULL);
+static struct kobj_attribute play_pause_attribute =__ATTR(play_pause, 440, play_pause_show, SYSFS_NULL);
+static struct kobj_attribute vol_up_attribute =__ATTR(vol_up, 440, vol_up_show, SYSFS_NULL);
+static struct kobj_attribute vol_down_attribute =__ATTR(vol_down, 440, vol_down_show, SYSFS_NULL);
+static struct kobj_attribute snooze_attribute =__ATTR(snooze, 440, snooze_show, SYSFS_NULL);
 
 void buttons_pullup(void) {
     unsigned int regval;
