@@ -9,12 +9,13 @@
 #include <linux/kernel.h>
 #include <linux/module.h> 
 
+#define SMART_1_PIN 199
+#define SMART_2_PIN 200
+#define ALARM_PIN 201
+
 #define VOLUME_DOWN_PIN 356
 #define VOLUME_UP_PIN 354
 #define SNOOZE_PIN 352
-
-#define SMART_1_PIN 199
-#define ALARM_PIN 201
 #define PLAY_PAUSE_PIN 355
 
 static int reset_ap;
@@ -22,6 +23,7 @@ static int reset_presets;
 static int _test_mode;
 
 static struct kobject *_kobject;
+static struct kobject *_button_kobject;
 
 void clear_ap_indicator(void) {
     
@@ -45,6 +47,19 @@ SYSFS_GENERATE(ap, reset_ap, 0, 1, 440, SYSFS_NULL, clear_ap_indicator);
 SYSFS_GENERATE(presets, reset_presets, 0, 1, 440, SYSFS_NULL, clear_presets_indicator);
 SYSFS_GENERATE(test_mode, _test_mode, 0, 1, 440, SYSFS_NULL, SYSFS_NULL);
 
+static ssize_t __used button_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf) {
+
+    sprintf(buf, "%s", attr->attr.name);
+}
+
+static struct kobj_attribute smart_1_attribute =__ATTR(smart_1, 440, button_show, SYSFS_NULL);
+static struct kobj_attribute smart_2_attribute =__ATTR(smart_2, 440, button_show, SYSFS_NULL);
+static struct kobj_attribute alarm_attribute =__ATTR(alarm, 440, button_show, SYSFS_NULL);
+static struct kobj_attribute play_pause_attribute =__ATTR(play_pause, 440, button_show, SYSFS_NULL);
+static struct kobj_attribute vol_up_attribute =__ATTR(vol_up, 440, button_show, SYSFS_NULL);
+static struct kobj_attribute vol_down_attribute =__ATTR(vol_down, 440, button_show, SYSFS_NULL);
+static struct kobj_attribute snooze_attribute =__ATTR(snooze, 440, button_show, SYSFS_NULL);
+
 void buttons_pullup(void) {
     unsigned int regval;
     unsigned int *regs;
@@ -55,6 +70,8 @@ void buttons_pullup(void) {
     regval = ioread32(regs);
     regval &= ~(3 << 14);
     regval |= (1 << 14); // PG 7 pull up
+    regval &= ~(3 << 16);
+    regval |= (1 << 16); // PG 8 pull up
     regval &= ~(3 << 18);
     regval |= (1 << 18); // PG 9 pull up
     iowrite32(regval, regs);
@@ -81,6 +98,8 @@ void buttons_pullup(void) {
 
 void buttons_setup_sysfs(void) {
 
+    int e;
+
     _kobject = kobject_create_and_add("beddi_reset", kernel_kobj);
 
     BUG_ON(_kobject == NULL);
@@ -88,17 +107,50 @@ void buttons_setup_sysfs(void) {
     SYSFS_CREATE_FILE(_kobject, ap);
     SYSFS_CREATE_FILE(_kobject, presets);
     SYSFS_CREATE_FILE(_kobject, test_mode);
+
+    _button_kobject = kobject_create_and_add("beddi_buttons", kernel_kobj);
+
+    BUG_ON(_button_kobject == NULL);
+
+    e = sysfs_create_file(_button_kobject, &smart_1_attribute);
+    BUG_ON(e != 0);
+
+    e = sysfs_create_file(_button_kobject, &smart_2_attribute);
+    BUG_ON(e != 0);
+
+    e = sysfs_create_file(_button_kobject, &alarm_attribute);
+    BUG_ON(e != 0);
+
+    e = sysfs_create_file(_button_kobject, &play_pause_attribute);
+    BUG_ON(e != 0);
+
+    e = sysfs_create_file(_button_kobject, &vol_up_attribute);
+    BUG_ON(e != 0);
+
+    e = sysfs_create_file(_button_kobject, &vol_down_attribute);
+    BUG_ON(e != 0);
+
+    e = sysfs_create_file(_button_kobject, &snooze_attribute);
+    BUG_ON(e != 0);
 }
 
 void buttons_run(void) {
 
-    gpio_request(VOLUME_DOWN_PIN, "volume_down_reset_pin");
-    gpio_request(VOLUME_UP_PIN, "volume_up_reset_pin");
-    gpio_request(SNOOZE_PIN, "preset_reset_pin");
+    gpio_request(VOLUME_DOWN_PIN, "volume_down_pin");
+    gpio_request(VOLUME_UP_PIN, "volume_up_pin");
+    gpio_request(SNOOZE_PIN, "snooze_pin");
+    gpio_request(PLAY_PAUSE_PIN, "play_pause_pin");
+    gpio_request(ALARM_PIN, "alarm_pin");
+    gpio_request(SMART_1_PIN, "smart_1_pin");
+    gpio_request(SMART_2_PIN, "smart_2_pin");
 
     gpio_direction_input(VOLUME_DOWN_PIN);
     gpio_direction_input(VOLUME_UP_PIN);
     gpio_direction_input(SNOOZE_PIN);
+    gpio_direction_input(PLAY_PAUSE_PIN);
+    gpio_direction_input(ALARM_PIN);
+    gpio_direction_input(SMART_1_PIN);
+    gpio_direction_input(SMART_2_PIN);
 
     mdelay(10);
     buttons_pullup();
@@ -114,10 +166,6 @@ void buttons_run(void) {
     if (reset_presets) {
         GF90970_presets_reset();
     }
-
-    gpio_free(VOLUME_UP_PIN);
-    gpio_free(VOLUME_DOWN_PIN);
-    gpio_free(SNOOZE_PIN);
 } 
 
 void buttons_cleanup(void) {
