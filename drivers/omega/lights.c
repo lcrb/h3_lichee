@@ -25,14 +25,14 @@ static struct kobject *_kobject;
 
 void lights_init(void) {
 
-    pwm_init(_pwm_r, "red", RED_PIN, 0, 1, 10);
-    pwm_init(_pwm_g, "green", GREEN_PIN, 0, 1, 10);
-    pwm_init(_pwm_b, "blue", BLUE_PIN, 0, 1, 10);
+    pwm_init(_pwm_r, "red", RED_PIN, 0, 0, 10);
+    pwm_init(_pwm_g, "green", GREEN_PIN, 0, 0, 10);
+    pwm_init(_pwm_b, "blue", BLUE_PIN, 0, 0, 10);
     pwm_init(_pwm_w, "white", WHITE_PIN, 0, 1, 10);
 
     // requested via SPI_GPIO_INIT in first stage of boot
     // TODO: improve
-    gpio_free(203);
+    gpio_free(BTN_PWM_PIN);
     pwm_init(_pwm_backlight, "backlight", BTN_PWM_PIN, 100, 0, 10);
 
     pwm_start(_pwm_r);
