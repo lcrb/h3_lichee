@@ -41,7 +41,9 @@ void write_data_consecutive(unsigned int addr_bits, unsigned int *data, unsigned
     for (i = 7; i > -1; i--) {
         SPI_WRN_LOW();
         SPI_DATA_CONDITION((addr_bits >> i) & 0x01);
+        __DELAY_US(100);
         SPI_WRN_HIGH();
+        __DELAY_US(100);
     }
 
     // Mystery Cycle
@@ -53,7 +55,9 @@ void write_data_consecutive(unsigned int addr_bits, unsigned int *data, unsigned
         for (i = 0; i < 4; i++) {
             SPI_WRN_LOW();
             SPI_DATA_CONDITION((data[j] >> i) & 0x01);
+            __DELAY_US(100);
             SPI_WRN_HIGH();
+            __DELAY_US(100);
         }
     }
 
