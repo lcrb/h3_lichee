@@ -3,6 +3,9 @@
 
 #include <stdbool.h>
 #include <linux/string.h>
+#include <linux/mutex.h>
+
+DEFINE_MUTEX(_sync_mutex);
 
 // Big Ole Array
 static int SEG_COM_GRID[21][4];
@@ -1283,6 +1286,8 @@ void GF90970_set_boot_stage_0(void) {
 }
 
 void GF90970_sync() {
+
+    mutex_lock_interruptible(&_sync_mutex);
     // send out in order: D0, D1, D2, D3 ==> COM0 bit, COM1 bit, COM2 bit, COM3 bit ==> each COM #'s bit is in corresponding column index
 
     // Create the 21 Combined int of 4 data bits
@@ -1304,4 +1309,6 @@ void GF90970_sync() {
 
     // Address is 0 (starts there), data bits array is data_bits_grid, total sets of data bits to send is 21
     write_data_consecutive(0, data_bits_grid, 21);
+
+    mutex_unlock(&_sync_mutex);
 }
