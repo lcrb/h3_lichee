@@ -54,6 +54,7 @@ static int sensor_poll_channel(int channel) {
 }
 
 void sensor_setup_sysfs(void) {
+    int e;
 
     _sensor_kobject = kobject_create_and_add("beddi_sensors", kernel_kobj);
 
