@@ -33,7 +33,13 @@ static int sensor_poll_channel(int channel) {
     ADC_CLK_PULSE();
     SET_PIN(ADC_DI_PIN);  // sgl/diff always 1 for single-ended mode
     ADC_CLK_PULSE();
-    RESET_PIN(channel); // odd/sign 0 for channel 0
+
+    if (channel == 1) {
+        SET_PIN(ADC_DI_PIN); // odd/sign 0 for channel 0
+    } else {
+        RESET_PIN(ADC_DI_PIN); // odd/sign 0 for channel 0
+    }
+
     ADC_CLK_PULSE();
     RESET_PIN(ADC_DI_PIN); // msbf == 0
     ADC_CLK_PULSE();
