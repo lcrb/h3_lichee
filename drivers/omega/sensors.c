@@ -60,10 +60,10 @@ void sensor_setup_sysfs(void) {
 
     BUG_ON(_sensor_kobject == NULL);
 
-    e = sysfs_create_file(_button_kobject, &temperature_attribute);
+    e = sysfs_create_file(_sensor_kobject, &temperature_attribute);
     BUG_ON(e != 0);
 
-    e = sysfs_create_file(_button_kobject, &light_attribute);
+    e = sysfs_create_file(_sensor_kobject, &light_attribute);
     BUG_ON(e != 0);
 }
 
