@@ -2,6 +2,7 @@
 #include "screen.h"
 #include "buttons.h"
 #include "test.h"
+#include "sensors.h"
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -20,6 +21,7 @@ static enum hrtimer_restart boot_offset_timer_handler(struct hrtimer *timer) {
         screen_init();
         buttons_run();
         lights_init();
+        sensor_init();
     }
 
     return HRTIMER_NORESTART;
@@ -38,6 +40,7 @@ int __init beddi_init(void) {
     screen_setup_sysfs();
     lights_setup_sysfs();
     buttons_setup_sysfs();
+    sensor_setup_sysfs();
 
     screen_init_stage0();
     boot_offset_timer_init();
