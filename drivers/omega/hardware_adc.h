@@ -14,7 +14,7 @@
 #define __DELAY_US(us) udelay(us)
 
 #define SET_OUTPUT(GPIO_Pin) gpio_direction_output(GPIO_Pin, 1)
-#define SET_INPUT(GPIO_Pin) gpio_direction_output(GPIO_Pin, 0)
+#define SET_INPUT(GPIO_Pin) gpio_direction_input(GPIO_Pin)
 
 #define SET_PIN(GPIO_Pin) gpio_set_value(GPIO_Pin, 1)
 #define RESET_PIN(GPIO_Pin) gpio_set_value(GPIO_Pin, 0)
