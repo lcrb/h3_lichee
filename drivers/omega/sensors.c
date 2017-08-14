@@ -24,37 +24,65 @@ static int sensor_poll_channel(int channel) {
     int val;
     int i;
 
-    ADC_ASSERT_HIGH();
-
-    RESET_PIN(ADC_CSN_PIN);
+    SET_PIN(ADC_CSN_PIN);
     RESET_PIN(ADC_CLK_PIN);
+    RESET_PIN(ADC_DI_PIN);
+
+    __DELAY_US(1);
+
+    RESET_PIN(ADC_CSN_PIN); // begin poll
 
     SET_PIN(ADC_DI_PIN); // start bit
-    ADC_CLK_PULSE();
-    SET_PIN(ADC_DI_PIN);  // sgl/diff always 1 for single-ended mode
-    ADC_CLK_PULSE();
-
-    if (channel == 1) {
-        SET_PIN(ADC_DI_PIN); // odd/sign 0 for channel 0
-    } else {
-        RESET_PIN(ADC_DI_PIN); // odd/sign 0 for channel 0
-    }
-
-    ADC_CLK_PULSE();
-    RESET_PIN(ADC_DI_PIN); // msbf == 0
-    ADC_CLK_PULSE();
-
-    ADC_CLK_PULSE(); // null bit
-
-    val = 0;
-    
-    for (i = 0; i <= 11; i++) {
-        ADC_CLK_PULSE();
-        val |= (READ_PIN(ADC_DO_PIN) << i);
-    }
-    
-    ADC_ASSERT_HIGH();
     __DELAY_US(1);
+
+    // clock pulse
+    SET_PIN(ADC_CLK_PIN);
+    __DELAY_US(1);
+    RESET_PIN(ADC_CLK_PIN);
+
+    SET_PIN(ADC_DI_PIN); // sgl/diff
+    __DELAY_US(1);
+
+    // clock pulse
+    SET_PIN(ADC_CLK_PIN);
+    __DELAY_US(1);
+    RESET_PIN(ADC_CLK_PIN);
+
+    if (channel) { // channel 0/1
+        SET_PIN(ADC_DI_PIN);
+    } else {
+        RESET_PIN(ADC_DI_PIN);
+    }
+
+    __DELAY_US(1);
+
+    // clock pulse
+    SET_PIN(ADC_CLK_PIN);
+    __DELAY_US(1);
+    RESET_PIN(ADC_CLK_PIN);
+
+    SET_PIN(ADC_DI_PIN); // msb first
+    __DELAY_US(1);
+
+    // clock pulse
+    SET_PIN(ADC_CLK_PIN);
+    __DELAY_US(1);
+    RESET_PIN(ADC_CLK_PIN);
+
+    __DELAY_US(1);
+
+    // clock pulse for null bit
+    SET_PIN(ADC_CLK_PIN);
+    __DELAY_US(1);
+    RESET_PIN(ADC_CLK_PIN);
+
+    for (i = 11; i >= 0; i--) {
+        SET_PIN(ADC_CLK_PIN);
+        __DELAY_US(1);
+        val |= (READ_PIN(ADC_DO_PIN) << i);
+        RESET_PIN(ADC_CLK_PIN);
+        __DELAY_US(1);
+    }
 
     return val;
 }
