@@ -76,6 +76,8 @@ static int sensor_poll_channel(int channel) {
     __DELAY_US(1);
     RESET_PIN(ADC_CLK_PIN);
 
+    val = 0;
+
     for (i = 11; i >= 0; i--) {
         SET_PIN(ADC_CLK_PIN);
         __DELAY_US(1);
@@ -83,6 +85,8 @@ static int sensor_poll_channel(int channel) {
         RESET_PIN(ADC_CLK_PIN);
         __DELAY_US(1);
     }
+
+    SET_PIN(ADC_CSN_PIN);
 
     return val;
 }
